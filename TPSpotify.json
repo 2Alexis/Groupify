@@ -1,0 +1,276 @@
+{
+	"info": {
+		"_postman_id": "ad0b54f7-9591-4f7c-bc0e-63c0a8fb5294",
+		"name": "New Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "32114570"
+	},
+	"item": [
+		{
+			"name": "Q1",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer BQBMRKIpd5hpWimotCjvI2OS3PGUxNIifZ6PMa-e7o03DusF2HAebq2HEXnbgeBYQp3vHcywp6dY1aemgZv_nA_0qO7EMhVcaBo0s2mqfJKQQF4C7n0",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://api.spotify.com/v1/search?q=JUL&type=artist&limit=3",
+					"protocol": "https",
+					"host": [
+						"api",
+						"spotify",
+						"com"
+					],
+					"path": [
+						"v1",
+						"search"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "JUL"
+						},
+						{
+							"key": "type",
+							"value": "artist"
+						},
+						{
+							"key": "limit",
+							"value": "3"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Q2",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer BQBMRKIpd5hpWimotCjvI2OS3PGUxNIifZ6PMa-e7o03DusF2HAebq2HEXnbgeBYQp3vHcywp6dY1aemgZv_nA_0qO7EMhVcaBo0s2mqfJKQQF4C7n0",
+						"type": "text"
+					}
+				],
+				"url": "https://api.spotify.com/v1/artists/3IW7ScrzXmPvZhB27hmfgy/albums"
+			},
+			"response": []
+		},
+		{
+			"name": "Q3",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer BQCPQsYwl_88PZb0maYRHgBnQ_YPUJciOMldo8Hqxod06Gg6TLTIrOPRGqEkYPiMftoWC0VT0KsMzM027X_I46Do4x-RoIJwgkwtOHLqUkAN_NERuVg",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://api.spotify.com/v1/albums/1WYGwCvsfFrr7kuQcfNnJr/tracks?limit=5",
+					"protocol": "https",
+					"host": [
+						"api",
+						"spotify",
+						"com"
+					],
+					"path": [
+						"v1",
+						"albums",
+						"1WYGwCvsfFrr7kuQcfNnJr",
+						"tracks"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Q4",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer BQCPQsYwl_88PZb0maYRHgBnQ_YPUJciOMldo8Hqxod06Gg6TLTIrOPRGqEkYPiMftoWC0VT0KsMzM027X_I46Do4x-RoIJwgkwtOHLqUkAN_NERuVg",
+						"type": "text"
+					}
+				],
+				"url": "https://api.spotify.com/v1/tracks/7sZas5ww0qoNF9B5B8ebir"
+			},
+			"response": []
+		},
+		{
+			"name": "Q5",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer BQCPQsYwl_88PZb0maYRHgBnQ_YPUJciOMldo8Hqxod06Gg6TLTIrOPRGqEkYPiMftoWC0VT0KsMzM027X_I46Do4x-RoIJwgkwtOHLqUkAN_NERuVg",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://api.spotify.com/v1/artists/2kXKa3aAFngGz2P4GjG5w2/top-tracks?market=FR",
+					"protocol": "https",
+					"host": [
+						"api",
+						"spotify",
+						"com"
+					],
+					"path": [
+						"v1",
+						"artists",
+						"2kXKa3aAFngGz2P4GjG5w2",
+						"top-tracks"
+					],
+					"query": [
+						{
+							"key": "market",
+							"value": "FR"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Q6",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer BQCPQsYwl_88PZb0maYRHgBnQ_YPUJciOMldo8Hqxod06Gg6TLTIrOPRGqEkYPiMftoWC0VT0KsMzM027X_I46Do4x-RoIJwgkwtOHLqUkAN_NERuVg",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://api.spotify.com/v1/search?q=Bolide%20allemand%20SDM&type=track&limit=1",
+					"protocol": "https",
+					"host": [
+						"api",
+						"spotify",
+						"com"
+					],
+					"path": [
+						"v1",
+						"search"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "Bolide%20allemand%20SDM"
+						},
+						{
+							"key": "type",
+							"value": "track"
+						},
+						{
+							"key": "limit",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Q7",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer BQCPQsYwl_88PZb0maYRHgBnQ_YPUJciOMldo8Hqxod06Gg6TLTIrOPRGqEkYPiMftoWC0VT0KsMzM027X_I46Do4x-RoIJwgkwtOHLqUkAN_NERuVg",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://api.spotify.com/v1/search?q=Les%20actus%20du%20jour%20-%20Hugo%20décrypte&type=show&limit=1",
+					"protocol": "https",
+					"host": [
+						"api",
+						"spotify",
+						"com"
+					],
+					"path": [
+						"v1",
+						"search"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "Les%20actus%20du%20jour%20-%20Hugo%20décrypte"
+						},
+						{
+							"key": "type",
+							"value": "show"
+						},
+						{
+							"key": "limit",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Q8",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer BQCPQsYwl_88PZb0maYRHgBnQ_YPUJciOMldo8Hqxod06Gg6TLTIrOPRGqEkYPiMftoWC0VT0KsMzM027X_I46Do4x-RoIJwgkwtOHLqUkAN_NERuVg",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://api.spotify.com/v1/shows/6y1PloEyNsCNJH9vHias4T/episodes?limit=3",
+					"protocol": "https",
+					"host": [
+						"api",
+						"spotify",
+						"com"
+					],
+					"path": [
+						"v1",
+						"shows",
+						"6y1PloEyNsCNJH9vHias4T",
+						"episodes"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "3"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Q9",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}

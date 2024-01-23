@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <title>Albums de JUL</title>
+</head>
+<body>
+    <h1>Albums de JUL</h1>
+    <ul>
+        {{range .}}
+            <li>
+                <img class = "jul" src="{{.ImageURL}}" alt="Couverture"/>
+                <h2>{{.Nom}}</h2>
+                <p><strong>Date de sortie : </strong>{{.DateSortie}}</p>
+                <p><strong>Nombre de musiques : </strong>{{.TotalSons}}</p>
+            </li>
+        {{end}}
+    </ul>
+</body>
+</html>

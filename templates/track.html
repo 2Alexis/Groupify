@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <title>{{.Nom}}</title>
+</head>
+<body>
+    <h1>Musique de {{.NomArtiste}}</h1>
+    <h2>{{.Nom}}</h2>
+    <div class ="container">
+        
+    <img class = "sdm" src="{{.AlbumCoverURL}}" alt="Couverture"/>
+    <div class = "info">
+    <p><strong>Artiste : </strong>{{.NomArtiste}}</p>
+    <p><strong>Album : </strong>{{.NomAlbum}}</p>
+    
+   
+    <p><strong>Date de sortie : </strong>{{.DateSortie}}</p>
+    </div>
+    <a class = "boutton" href="{{.LienSpotify}}" target="_blank">Écouter sur Spotify</a>
+</div>
+</body>
+</html>
