@@ -41,6 +41,8 @@ type Son struct {
 
 func main() {
 
+	loadUsersFromFile()
+
 	http.HandleFunc("/", homeHandler)
 	http.HandleFunc("/logout", logoutHandler)
 	http.HandleFunc("/login", loginHandler)
@@ -346,7 +348,6 @@ func saveUsersToFile() {
 		fmt.Println("Erreur lors de l'écriture dans le fichier des utilisateurs:", err)
 	}
 }
-
 func registerHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		username := r.FormValue("username")
@@ -362,20 +363,19 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Créez l'utilisateur et ajoutez-le à la liste des utilisateurs
+		// Append the new user to the existing list of users
 		newUser := User{Username: username, Password: password}
 		users = append(users, newUser)
 
-		// Enregistrez les utilisateurs dans le fichier JSON
+		// Save the updated list of users to the file
 		saveUsersToFile()
 
-		// Set cookies/sessions if needed
-
+		// Redirect the user to the success page or any other desired page
 		http.Redirect(w, r, "/success", http.StatusSeeOther)
 		return
 	}
 
-	// Affichez le formulaire d'inscription
+	// Display the registration form
 	tmpl, err := template.ParseFiles("templates/register.html")
 	if err != nil {
 		http.Error(w, "Error rendering registration page", http.StatusInternalServerError)
