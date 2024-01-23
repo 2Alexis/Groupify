@@ -14,7 +14,7 @@ import (
 const usersFile = "login.json"
 
 var Token string
-var expirationTime time.Time
+var ExpirationTime time.Time
 
 type Album struct {
 	Nom        string `json:"name"`
@@ -41,27 +41,27 @@ type Son struct {
 
 func main() {
 
-	http.HandleFunc("/", homeHandler)
-	http.HandleFunc("/logout", logoutHandler)
-	http.HandleFunc("/login", loginHandler)
-	http.HandleFunc("/register", registerHandler)
-	http.HandleFunc("/album/jul", albumHandler)
-	http.HandleFunc("/track/sdm", trackHandler)
+	http.HandleFunc("/", HomeHandler)
+	http.HandleFunc("/logout", LogoutHandler)
+	http.HandleFunc("/login", LoginHandler)
+	http.HandleFunc("/register", RegisterHandler)
+	http.HandleFunc("/album/jul", AlbumHandler)
+	http.HandleFunc("/track/sdm", TrackHandler)
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
 	fmt.Println("Serveur en cours d'écoute sur le port :8080")
 	http.ListenAndServe(":8080", nil)
 }
 
-func albumHandler(w http.ResponseWriter, r *http.Request) {
+func AlbumHandler(w http.ResponseWriter, r *http.Request) {
 
-	Token, _, err := getAccessToken()
+	Token, _, err := GetAccessToken()
 	if err != nil {
 		http.Error(w, "Erreur lors de l'obtention du token d'accès: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	albums, err := getArtistAlbums("3IW7ScrzXmPvZhB27hmfgy", Token)
+	albums, err := GetArtistAlbums("3IW7ScrzXmPvZhB27hmfgy", Token)
 	if err != nil {
 		http.Error(w, "Erreur lors de la récupération des données depuis l'API de Spotify: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -80,14 +80,14 @@ func albumHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func trackHandler(w http.ResponseWriter, r *http.Request) {
-	Token, _, err := getAccessToken()
+func TrackHandler(w http.ResponseWriter, r *http.Request) {
+	Token, _, err := GetAccessToken()
 	if err != nil {
 		http.Error(w, "Erreur lors de l'obtention du token d'accès: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	son, err := getTrackInfo("0EzNyXyU7gHzj2TN8qYThj", Token)
+	son, err := GetTrackInfo("0EzNyXyU7gHzj2TN8qYThj", Token)
 	if err != nil {
 		http.Error(w, "Erreur lors de la récupération des données depuis l'API de Spotify: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -106,7 +106,7 @@ func trackHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func getArtistAlbums(artistID, Token string) ([]Album, error) {
+func GetArtistAlbums(artistID, Token string) ([]Album, error) {
 
 	apiURL := fmt.Sprintf("https://api.spotify.com/v1/artists/%s/albums", artistID)
 
@@ -157,7 +157,7 @@ func getArtistAlbums(artistID, Token string) ([]Album, error) {
 	return albums, nil
 }
 
-func getTrackInfo(trackID, Token string) (Son, error) {
+func GetTrackInfo(trackID, Token string) (Son, error) {
 	apiURL := fmt.Sprintf("https://api.spotify.com/v1/tracks/%s", trackID)
 
 	req, err := http.NewRequest("GET", apiURL, nil)
@@ -210,7 +210,7 @@ func getTrackInfo(trackID, Token string) (Son, error) {
 	return son, nil
 }
 
-func homeHandler(w http.ResponseWriter, r *http.Request) {
+func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("templates/index.html")
 	if err != nil {
 		http.Error(w, "Erreur lors de la création du modèle HTML: "+err.Error(), http.StatusInternalServerError)
@@ -224,7 +224,7 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func getAccessToken() (string, time.Time, error) {
+func GetAccessToken() (string, time.Time, error) {
 
 	clientID := "8a6ceee68c3b4ab08b04e844f0b7e541"
 	clientSecret := "b6b6e386085e4ed78b52234b2a21d01d"
@@ -265,23 +265,23 @@ func getAccessToken() (string, time.Time, error) {
 		return "", time.Time{}, err
 	}
 
-	expirationTime := time.Now().Add(time.Second * time.Duration(response.ExpiresIn))
+	ExpirationTime := time.Now().Add(time.Second * time.Duration(response.ExpiresIn))
 	// J'avoue j'ai pas tout compris pour ça mais chuuut on m'en veux pas
-	return response.AccessToken, expirationTime, nil
+	return response.AccessToken, ExpirationTime, nil
 }
 
-func logoutHandler(w http.ResponseWriter, r *http.Request) {
+func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	// No need to clear cookies or sessions in this case
 	// Redirect the user to the login page or any other desired page
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
 
-func loginHandler(w http.ResponseWriter, r *http.Request) {
+func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		username := r.FormValue("username")
 		password := r.FormValue("password")
 
-		if authenticateUser(username, password) {
+		if AuthenticateUser(username, password) {
 			// Authentication successful
 			// Set cookies/sessions if needed
 
@@ -308,7 +308,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func authenticateUser(username, password string) bool {
+func AuthenticateUser(username, password string) bool {
 	// Simple authentication logic for demonstration purposes
 	for _, user := range users {
 		if user.Username == username && user.Password == password {
@@ -318,7 +318,7 @@ func authenticateUser(username, password string) bool {
 	return false
 }
 
-func loadUsersFromFile() {
+func LoadUsersFromFile() {
 	// Chargez les utilisateurs depuis le fichier JSON
 	file, err := ioutil.ReadFile(usersFile)
 	if err != nil {
@@ -333,7 +333,7 @@ func loadUsersFromFile() {
 	}
 }
 
-func saveUsersToFile() {
+func SaveUsersToFile() {
 	// Enregistrez les utilisateurs dans le fichier JSON
 	usersJSON, err := json.MarshalIndent(users, "", "    ")
 	if err != nil {
@@ -347,7 +347,7 @@ func saveUsersToFile() {
 	}
 }
 
-func registerHandler(w http.ResponseWriter, r *http.Request) {
+func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		username := r.FormValue("username")
 		password := r.FormValue("password")
@@ -357,7 +357,7 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		if userExists(username) {
+		if UserExists(username) {
 			http.Error(w, "Username already exists", http.StatusBadRequest)
 			return
 		}
@@ -367,7 +367,7 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 		users = append(users, newUser)
 
 		// Enregistrez les utilisateurs dans le fichier JSON
-		saveUsersToFile()
+		SaveUsersToFile()
 
 		// Set cookies/sessions if needed
 
@@ -389,7 +389,7 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func userExists(username string) bool {
+func UserExists(username string) bool {
 	for _, user := range users {
 		if user.Username == username {
 			return true
