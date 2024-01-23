@@ -41,7 +41,7 @@ type Son struct {
 
 func main() {
 
-	loadUsersFromFile()
+	LoadUsersFromFile()
 
 	http.HandleFunc("/", HomeHandler)
 	http.HandleFunc("/logout", LogoutHandler)
@@ -349,7 +349,7 @@ func SaveUsersToFile() {
 	}
 }
 
-func registerHandler(w http.ResponseWriter, r *http.Request) {
+func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		username := r.FormValue("username")
 		password := r.FormValue("password")
@@ -369,7 +369,7 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 		users = append(users, newUser)
 
 		// Enregistrez les utilisateurs dans le fichier JSON
-		saveUsersToFile()
+		SaveUsersToFile()
 
 		// Redirect the user to the success page or any other desired page
 		http.Redirect(w, r, "/success", http.StatusSeeOther)
