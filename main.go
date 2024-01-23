@@ -4,11 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
 )
+
+const usersFile = "login.json"
 
 var Token string
 var expirationTime time.Time
@@ -37,7 +40,9 @@ type Son struct {
 }
 
 func main() {
+
 	http.HandleFunc("/", homeHandler)
+	http.HandleFunc("/logout", logoutHandler)
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/register", registerHandler)
 	http.HandleFunc("/album/jul", albumHandler)
@@ -264,34 +269,47 @@ func getAccessToken() (string, time.Time, error) {
 	// J'avoue j'ai pas tout compris pour ça mais chuuut on m'en veux pas
 	return response.AccessToken, expirationTime, nil
 }
+
+func logoutHandler(w http.ResponseWriter, r *http.Request) {
+	// No need to clear cookies or sessions in this case
+	// Redirect the user to the login page or any other desired page
+	http.Redirect(w, r, "/login", http.StatusSeeOther)
+}
+
 func loginHandler(w http.ResponseWriter, r *http.Request) {
-	// Parse form data from the request
-	err := r.ParseForm()
-	if err != nil {
-		http.Error(w, "Error parsing form data", http.StatusInternalServerError)
+	if r.Method == http.MethodPost {
+		username := r.FormValue("username")
+		password := r.FormValue("password")
+
+		if authenticateUser(username, password) {
+			// Authentication successful
+			// Set cookies/sessions if needed
+
+			http.Redirect(w, r, "/success", http.StatusSeeOther)
+			return
+		}
+
+		// Authentication failed
+		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
 		return
 	}
 
-	// Retrieve user input
-	username := r.Form.Get("username")
-	password := r.Form.Get("password")
+	// Display the login form
+	tmpl, err := template.ParseFiles("templates/login.html")
+	if err != nil {
+		http.Error(w, "Error rendering login page", http.StatusInternalServerError)
+		return
+	}
 
-	// Check credentials against the user database
-	if isValidCredentials(username, password) {
-		// If credentials are valid, set a session token or cookie
-		setSessionToken(w, username)
-
-		// Redirect to the user's dashboard or another page
-		http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
-	} else {
-		// If credentials are invalid, redirect back to the login page
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
+	err = tmpl.Execute(w, nil)
+	if err != nil {
+		http.Error(w, "Error rendering login page", http.StatusInternalServerError)
+		return
 	}
 }
 
-// Check if the provided credentials are valid
-func isValidCredentials(username, password string) bool {
-	// Check against your user database (in-memory slice in this example)
+func authenticateUser(username, password string) bool {
+	// Simple authentication logic for demonstration purposes
 	for _, user := range users {
 		if user.Username == username && user.Password == password {
 			return true
@@ -300,62 +318,78 @@ func isValidCredentials(username, password string) bool {
 	return false
 }
 
-// Set a session token or cookie
-func setSessionToken(w http.ResponseWriter, username string) {
-	// Generate a session token (you may use a library for secure token generation)
-	sessionToken := "generated_session_token"
-
-	// Set a cookie with the session token
-	cookie := http.Cookie{
-		Name:     "session_token",
-		Value:    sessionToken,
-		Expires:  time.Now().Add(30 * time.Minute), // Set expiration time as needed
-		HttpOnly: true,
-	}
-
-	http.SetCookie(w, &cookie)
-}
-func registerHandler(w http.ResponseWriter, r *http.Request) {
-	// Parse form data from the request
-	err := r.ParseForm()
+func loadUsersFromFile() {
+	// Chargez les utilisateurs depuis le fichier JSON
+	file, err := ioutil.ReadFile(usersFile)
 	if err != nil {
-		http.Error(w, "Error parsing form data", http.StatusInternalServerError)
+		fmt.Println("Erreur lors de la lecture du fichier des utilisateurs:", err)
 		return
 	}
 
-	// Retrieve user input
-	username := r.Form.Get("username")
-	password := r.Form.Get("password")
-
-	// Validate user input (add more validation as needed)
-	if username == "" || password == "" {
-		http.Error(w, "Username and password are required", http.StatusBadRequest)
+	err = json.Unmarshal(file, &users)
+	if err != nil {
+		fmt.Println("Erreur lors de la désérialisation du fichier des utilisateurs:", err)
 		return
 	}
-
-	// Check if the username is already taken
-	if isUsernameTaken(username) {
-		http.Error(w, "Username is already taken", http.StatusBadRequest)
-		return
-	}
-
-	// Create a new user
-	newUser := User{
-		Username: username,
-		Password: password,
-		// Initialize other user-related fields as needed
-	}
-
-	// Add the new user to the user database
-	users = append(users, newUser)
-
-	// Redirect to a success page or the login page
-	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
 
-// Check if the provided username is already taken
-func isUsernameTaken(username string) bool {
-	// Check against your user database (in-memory slice in this example)
+func saveUsersToFile() {
+	// Enregistrez les utilisateurs dans le fichier JSON
+	usersJSON, err := json.MarshalIndent(users, "", "    ")
+	if err != nil {
+		fmt.Println("Erreur lors de la sérialisation des utilisateurs:", err)
+		return
+	}
+
+	err = ioutil.WriteFile(usersFile, usersJSON, 0644)
+	if err != nil {
+		fmt.Println("Erreur lors de l'écriture dans le fichier des utilisateurs:", err)
+	}
+}
+
+func registerHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodPost {
+		username := r.FormValue("username")
+		password := r.FormValue("password")
+
+		if username == "" || password == "" {
+			http.Error(w, "Username and password are required", http.StatusBadRequest)
+			return
+		}
+
+		if userExists(username) {
+			http.Error(w, "Username already exists", http.StatusBadRequest)
+			return
+		}
+
+		// Créez l'utilisateur et ajoutez-le à la liste des utilisateurs
+		newUser := User{Username: username, Password: password}
+		users = append(users, newUser)
+
+		// Enregistrez les utilisateurs dans le fichier JSON
+		saveUsersToFile()
+
+		// Set cookies/sessions if needed
+
+		http.Redirect(w, r, "/success", http.StatusSeeOther)
+		return
+	}
+
+	// Affichez le formulaire d'inscription
+	tmpl, err := template.ParseFiles("templates/register.html")
+	if err != nil {
+		http.Error(w, "Error rendering registration page", http.StatusInternalServerError)
+		return
+	}
+
+	err = tmpl.Execute(w, nil)
+	if err != nil {
+		http.Error(w, "Error rendering registration page", http.StatusInternalServerError)
+		return
+	}
+}
+
+func userExists(username string) bool {
 	for _, user := range users {
 		if user.Username == username {
 			return true
